@@ -17,7 +17,7 @@ export default class Chat {
     form.addEventListener("submit", this.#createNickNameBind);
   }
 
-  // Метод, который отправляет введенный псевдоним на сервер. 
+  // Метод, который отправляет введенный псевдоним на сервер.
   //Если такой псевдоним занят, то выводит соответствующее уведомление.
   //Если псевдоним свободен - удаляет форму ввода псевдонима
   async #createNickName(form, e) {
@@ -46,7 +46,7 @@ export default class Chat {
       if (answer.status === "This nickname is taken") {
         alert(`Псевдоним "${nickname}" занят!`);
         return;
-      }       
+      }
     }
     this.#user = answer;
 
@@ -58,7 +58,7 @@ export default class Chat {
   // Метод, управляющий работой чата.
   //Осуществляет связь с сервером посредством "WebSocket", создает окно с
   //псевдонимами всех подключенных пользователей и окно чата.
-  //При соединении отправляет на сервер псевдоним пользователя, отправляет и 
+  //При соединении отправляет на сервер псевдоним пользователя, отправляет и
   //получает сообщения.
   #openChat() {
     const wsUrl = "ws://" + this.#url + "/ws";
@@ -70,38 +70,38 @@ export default class Chat {
     const sendMes = this.#sendMessage.bind(this, ws);
     this.#chatForm.addEventListener("submit", sendMes);
 
-    ws.addEventListener('open', (e) => {
-      console.log('ws open');
+    ws.addEventListener("open", (e) => {
+      console.log("ws open");
       console.log(e);
       const data = {
         type: "user",
         user: this.#user,
-      }
+      };
       const message = JSON.stringify(data);
-    ws.send(message);
+      ws.send(message);
     });
-    
-    ws.addEventListener('close', (e) => {
-      console.log('ws close');
+
+    ws.addEventListener("close", (e) => {
+      console.log("ws close");
       console.log(e);
     });
-    
-    ws.addEventListener('error', (e) => {
-      console.log('ws error');
+
+    ws.addEventListener("error", (e) => {
+      console.log("ws error");
       console.log(e);
     });
-    
-    ws.addEventListener('message', (e) => {
-      console.log('ws message');
+
+    ws.addEventListener("message", (e) => {
+      console.log("ws message");
       console.log(e);
-          
+
       const data = JSON.parse(e.data);
 
       //Обновляет список участников чата в окне пользователей
       if (data.type === "user") {
         const names = JSON.parse(data.users);
         this.#userBox.innerHTML = "";
-        names.forEach(name => this.#showUser(name));
+        names.forEach((name) => this.#showUser(name));
         return;
       }
 
@@ -117,7 +117,7 @@ export default class Chat {
   }
 
   // Метод, отправляющий сообщение на сервер.
-  //Очищает поле ввода сообщения, формирует объект, содержащий тип сообщения, 
+  //Очищает поле ввода сообщения, формирует объект, содержащий тип сообщения,
   //псевдоним пользователя и текст сообщения, и отправляет его на сервер.
   #sendMessage(ws, e) {
     e.preventDefault();
@@ -138,7 +138,7 @@ export default class Chat {
   // Метод, отображающий сообщение в окне чата.
   //Формирует из имени отправителя и форматированной даты пояснение к сообщению.
   #showMessage(data) {
-    const {textMes, timestamp} = data;
+    const { textMes, timestamp } = data;
     let name = data.name;
 
     const messageDiv = document.createElement("div");
@@ -148,11 +148,11 @@ export default class Chat {
       <p class="message message-text"></p>`;
     const chatBox = this.#chatForm.querySelector(".chat-box");
     chatBox.append(messageDiv);
-    
+
     const date = formatsDate(timestamp);
-    
+
     //Если отправитель сообщения текущий пользователь, то его псевдоним
-    //в пояснении к сообщению заменяется на "You", пояснение выравнивается 
+    //в пояснении к сообщению заменяется на "You", пояснение выравнивается
     //по правому краю и окрашивается в алый цвет шрифта.
     if (name === this.#user.name) {
       name = "You";
@@ -189,7 +189,7 @@ export default class Chat {
   }
 }
 
-// Функция принимает временую метку и возвращает строку с временем и 
+// Функция принимает временую метку и возвращает строку с временем и
 //датой в определенном формате.
 function formatsDate(timestamp) {
   const date = new Date(timestamp);
@@ -208,11 +208,12 @@ function formatsDate(timestamp) {
 
   let year = String(date.getFullYear());
 
-  const formattedDate = hours + ":" + minutes + " " + day + "." + month + "." + year;
+  const formattedDate =
+    hours + ":" + minutes + " " + day + "." + month + "." + year;
   return formattedDate;
 }
 
-// Функция, которая создает и добавляет на страницу окно для отображения 
+// Функция, которая создает и добавляет на страницу окно для отображения
 //псевдонимов участников чата.
 function createUserBox() {
   const userBox = document.createElement("div");
@@ -236,7 +237,7 @@ function createChatForm() {
   return chatForm;
 }
 
-// Функция, которая создает и добавляет на страницу форму для 
+// Функция, которая создает и добавляет на страницу форму для
 //ввода псевдонима.
 function createNickNameForm() {
   const form = document.createElement("form");
